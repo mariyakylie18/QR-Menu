@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR menu</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="menu-header">
+        <p class="restaurant-label">Welcome to Our restaurant</p>
+        <h1>Our QR Menu</h1>
+        <p class="restaurant-description">Choose your favourite food</p>
+      </header>
+
+      <section class="search-section">
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Search food ..."
+          aria-label="Search food "
+        />
+
+        <button id="search-btn" type="button">Search</button>
+        <!-- <button class="close-modal">x</button> -->
+      </section>
+
+      <nav id="category-list" class="categories" aria-label="Food categories">
+        <!-- <button class="category-btn active">All</button>
+        <button class="category-btn">Burger</button>
+        <button class="category-btn">Drinks</button>
+        <button class="category-btn">Desert</button> -->
+      </nav>
+    </main>
+    <div id="food-list"></div>
+    <script src="script.js"></script>
+  </body>
+</html>

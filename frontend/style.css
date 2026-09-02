@@ -1,0 +1,275 @@
+:root {
+  --primary-color: #d79279;
+  --secondary-color: #2b2b2b;
+  --background-color: #aaf19e;
+  --surface-color: #f6f1f1;
+  --text-color: #222;
+  --text-muted: #777777;
+  --white: #fef9f9;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+
+  --container-width: 1200px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Ariel, san-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  display: flex;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.container {
+  width: min(100% - 32px, var(--container-width));
+  margin-inline: auto;
+}
+
+.menu-header {
+  padding-block: 40px, 24px;
+}
+
+.restaurant-label {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.menu-header h1 {
+  margin-top: var(--space-sm);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+}
+
+.restaurant-description {
+  margin-top: var(--space-sm);
+  color: var(--text-muted);
+}
+
+.search-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-section button {
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+#search-btn {
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+#search-input {
+  width: 100%;
+  padding: 14px 18px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: var(--radius-md);
+
+  background: var(--surface-color);
+  color: var(--text-color);
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+#search-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--primary-color) 15%, transparent);
+}
+
+.categories {
+  display: flex;
+  gap: var(--space-sm);
+
+  margin-block: var(--space-lg);
+
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.categories::-webkit-scrollbar {
+  display: none;
+}
+
+.category-btn {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 999px;
+
+  background: var(--surface-color);
+  color: var(--text-color);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.category-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-color);
+}
+
+.category-btn.active {
+  background: var(--primary-color);
+  color: var(--white);
+  border-color: var(--primary-color);
+  font-weight: 600;
+}
+
+#food-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.food-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 4px,
+    12px rgba(0, 0, 0, 0.1);
+  padding-bottom: 15px;
+}
+
+.food-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.food-card h3 {
+  margin: 14px 16px 6px;
+  font-size: 18px;
+}
+
+.food-card p {
+  margin: 0 16px 10px;
+  line-height: 1.5;
+}
+
+.food-card strong {
+  display: block;
+  margin: 0 16px 10px;
+  font-size: 18px;
+}
+
+.food-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.food-modal-content {
+  background: white;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 20px;
+  padding: 20px;
+  position: relative;
+}
+
+.modal-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .search-section {
+    gap: 8px;
+  }
+
+  #search-btn {
+    padding: 14px 16px;
+  }
+  #food-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .food-card {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .food-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+}
