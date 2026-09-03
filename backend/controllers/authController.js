@@ -25,7 +25,7 @@ const register = async (req, res) => {
     res.status(201).json({
       message: "User registered successfully",
       user: {
-        id: user_id,
+        id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -65,7 +65,7 @@ const login = async (req, res) => {
         userId: user._id,
         role: user.role,
       },
-      "mySecretKey",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       },

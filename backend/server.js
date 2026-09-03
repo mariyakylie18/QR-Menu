@@ -4,6 +4,7 @@ const cors = require("cors");
 const Food = require("./models/Food");
 const foodRoutes = require("./routes/foodRoutes");
 const authRoutes = require("./routes/authRoutes");
+require("dotenv").config();
 
 const app = express();
 app.use(
@@ -18,7 +19,7 @@ app.use("/auth", authRoutes);
 const PORT = 8000;
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/QR")
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
   })
