@@ -7,17 +7,20 @@ loginForm.addEventListener("submit", async (event) => {
   const password = document.getElementById("password").value;
 
   try {
-    const response = await fetch("http://localhost:8000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const response = await fetch(
+      "https://qr-menu-nd8d.onrender.com/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      },
+    );
 
     const data = await response.json();
 

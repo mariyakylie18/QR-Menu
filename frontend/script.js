@@ -5,7 +5,7 @@ const categoryButtons = document.querySelectorAll(".category-btn");
 const foodSearch = document.getElementById("food-search");
 const categoryFilter = document.getElementById("category-filter");
 const categoryList = document.getElementById("category-list");
-const API_URL = "http://localhost:8000/foods";
+const API_URL = "https://qr-menu-nd8d.onrender.com/foods";
 let selectedCategory = "";
 let editingFoodId = null;
 
@@ -77,12 +77,12 @@ function getImageUrl(image) {
     return image;
   }
   if (image.startsWith("/uploads/")) {
-    return `http://localhost:8000${image}`;
+    return `https://qr-menu-nd8d.onrender.com/foods${image}`;
   }
   if (image.startsWith("uploads/")) {
-    return `http://localhost:8000/${image}`;
+    return `https://qr-menu-nd8d.onrender.com/${image}`;
   }
-  return `http://localhost:8000/uploads/${image} `;
+  return `https://qr-menu-nd8d.onrender.com/uploads/${image} `;
 }
 
 function renderFoods(foods) {
