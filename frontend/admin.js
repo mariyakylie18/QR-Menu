@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000/foods";
+const API_URL = "https://qr-menu-nd8d.onrender.com/foods";
 const token = localStorage.getItem("token");
 
 const imageInput = document.getElementById("food-image");
@@ -192,7 +192,7 @@ function getImageUrl(image) {
     return " ";
   }
   if (image.startsWith("/uploads/")) {
-    return `http://localhost:8000${image}`;
+    return `https://qr-menu-nd8d.onrender.com${image}`;
   }
   if (image.startsWith("images/")) {
     return image;

@@ -1,4 +1,5 @@
 const Food = require("../models/Food");
+const cloudinary = require("../config/cloudinary");
 
 const getFoods = async (req, res) => {
   try {
@@ -81,9 +82,23 @@ const createFood = async (req, res) => {
     }
     // buh validation taarssn bol food data uusgene
 
+    const uploadResult = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "qr-menu",
+        },
+        (error, result) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve(result);
+        },
+      );
+      uploadStream.end(req.file.buffer);
+    });
     const foodData = {
       ...req.body,
-      image: `/uploads/${req.file.filename}`,
+      image: uploadResult.secure_url,
     };
     const food = await Food.create(foodData);
 

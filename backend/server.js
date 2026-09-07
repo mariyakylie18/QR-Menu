@@ -1,16 +1,18 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const Food = require("./models/Food");
 const foodRoutes = require("./routes/foodRoutes");
 const authRoutes = require("./routes/authRoutes");
-require("dotenv").config();
 
 const app = express();
 app.use(
   cors({
-    origin: "http://127.0.0.1:5500",
-    origin: "https://qr-menu-frontend-a4qc.onrender.com",
+    origin: [
+      "http://127.0.0.1:5500",
+      "https://qr-menu-frontend-a4qc.onrender.com",
+    ],
   }),
 );
 app.use(express.json());
