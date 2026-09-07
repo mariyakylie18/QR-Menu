@@ -146,7 +146,21 @@ const updateFood = async (req, res) => {
       description,
     };
     if (req.file) {
-      updateData.image = `/uploads/${req.file.filename}`;
+      const uploadResult = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "qr-menu",
+          },
+          (error, result) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(result);
+          },
+        );
+        uploadStream.end(req.file.buffer);
+      });
+      updateData.image = uploadResult.secure_url;
     }
     // Mongo db update
     const food = await Food.findByIdAndUpdate(req.params.id, updateData, {
