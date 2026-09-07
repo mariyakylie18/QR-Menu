@@ -9,6 +9,12 @@ const API_URL = "https://qr-menu-nd8d.onrender.com/foods";
 let selectedCategory = "";
 let editingFoodId = null;
 
+let currentPage = 1;
+let totalPages = 1;
+const prevPageBtn = document.getElementById("prev-page-btn");
+const nextPageBtn = document.getElementById("next-page-btn");
+const pageInfo = document.getElementById("page-info");
+
 searchInput.addEventListener("input", () => {
   getFoods();
 });
@@ -48,6 +54,8 @@ async function getFoods() {
     const search = searchInput.value.trim();
     // const category = categoryFilter.value();
     const params = new URLSearchParams();
+    params.set("page", currentPage);
+    params.set("limit", 6);
     if (search) {
       params.set("search", search);
     }
@@ -62,12 +70,29 @@ async function getFoods() {
     }
 
     const data = await response.json();
+    currentPage = data.page;
+    totalPages = data.totalPages;
+    pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
     renderCategories(data.categories);
     renderFoods(data.foods);
   } catch (error) {
     console.log("Error", error);
   }
 }
+
+nextPageBtn.addEventListener("click", () => {
+  if (currentPage < totalPages) {
+    currentPage++;
+    getFoods();
+  }
+});
+
+prevPageBtn.addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    getFoods();
+  }
+});
 
 function getImageUrl(image) {
   if (!image) {
