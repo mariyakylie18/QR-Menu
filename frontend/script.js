@@ -26,6 +26,7 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 searchButton.addEventListener("click", () => {
+  currentPage;
   getFoods();
 });
 
@@ -44,7 +45,7 @@ categoryButtons.forEach((button) => {
     } else {
       selectedCategory = category;
     }
-
+    currentPage = 1;
     getFoods();
   });
 });
@@ -73,6 +74,8 @@ async function getFoods() {
     currentPage = data.page;
     totalPages = data.totalPages;
     pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+    prevPageBtn.disabled = currentPage <= 1;
+    nextPageBtn.disabled = currentPage >= totalPages;
     renderCategories(data.categories);
     renderFoods(data.foods);
   } catch (error) {
