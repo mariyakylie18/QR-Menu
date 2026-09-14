@@ -4,13 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QR menu</title>
+    <p id="table-number"></p>
     <link rel="stylesheet" href="style.css" />
   </head>
+  <div id="cart-modal" class="cart-modal">
+    <div class="cart-content">
+      <button id="close-cart-btn" type="button">x</button>
+      <h2>Your Cart</h2>
+      <div id="cart-items"></div>
+
+      <p>
+        Total:
+        <strong id="cart-total">0₮</strong>
+      </p>
+      <button id="place-order-btn" type="button">Place order</button>
+    </div>
+  </div>
+  <p id="order-status"></p>
   <body>
     <main class="container">
+      <button id="cart-btn" type="button">
+        🛒 Cart (<span id="cart-count">0</span>)
+      </button>
       <header class="menu-header">
-        <p class="restaurant-label">Welcome to Our restaurant</p>
-        <h1>Our QR Menu</h1>
+        <p class="restaurant-label">
+          AI 会社　ゆき美 Welcome to Our TEST　restaurant
+        </p>
+        <h1>Our TEST QR Menu　頑張って</h1>
         <p class="restaurant-description">Choose your favourite food</p>
       </header>
 
@@ -38,6 +58,7 @@
       <span id="page-info">Page 1 / 1</span>
       <button id="next-page-btn" type="button">Next</button>
     </div>
+    <script src="https://qr-menu-nd8d.onrender.com/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

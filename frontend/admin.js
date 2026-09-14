@@ -1,5 +1,7 @@
 const API_URL = "https://qr-menu-nd8d.onrender.com/foods";
 const token = localStorage.getItem("token");
+const BACKEND_URL = "https://qr-menu-nd8d.onrender.com";
+const socket = io(BACKEND_URL);
 
 const imageInput = document.getElementById("food-image");
 const imageBtn = document.getElementById("image-btn");
@@ -20,6 +22,11 @@ const totalFoodsEl = document.getElementById("total-foods");
 const totalCategoriesEl = document.getElementById("total-categories");
 const clearFilterBtn = document.getElementById("clear-filter-btn");
 const sortFilter = document.getElementById("sort-filter");
+const ordersList = document.getElementById("orders-list");
+const orderNotification = document.getElementById("order-notification");
+const orderSound = document.getElementById("order-sound");
+const orderHistory = document.getElementById("order-history");
+const historyBtn = document.getElementById("history-btn");
 
 let currentPage = 1;
 let totalPages = 1;
@@ -424,4 +431,101 @@ addFoodForm.addEventListener("submit", async (event) => {
   getFoods();
 });
 
+async function getOrders() {
+  ordersList.innerHTML = "";
+  orderHistory.innerHTML = "";
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${BACKEND_URL}/orders`, {
+    headers: {
+      Authorization: `Baerer ${token}`,
+    },
+  });
+  const data = await response.json();
+  data.orders.forEach((order) => {
+    console.log(order);
+
+    const itemsHtml = order.items
+      .map((item) => {
+        return `<p>${item.name} x ${item.quantity}</p>`;
+      })
+      .join("");
+    const orderTime = new Date(order.createdAt).toLocaleTimeString();
+    const orderDate = new Date(order.createdAt).toLocaleDateString();
+    const orderCard = document.createElement("div");
+    if (order.status === "pending") {
+      orderCard.classList.add("new-order");
+    } else {
+      orderCard.classList.remove("new-order");
+    }
+    orderCard.innerHTML = `
+    <h3>Ширээ ${order.tableNumber}</h3>
+    <p>Захиалгын огноо: ${orderDate}, ${orderTime}</p>
+    <div class="order-detail">
+    ${itemsHtml}
+    <p>Total: ${order.totalPrice.toLocaleString()}₮</p>
+    </div>
+    <select class= "order-status">
+    <option value="pending" ${order.status === "pending" ? "selected" : ""}>pending</option>
+    <option value="confirmed" ${order.status === "confirmed" ? "selected" : ""}>confirmed</option>
+    <option value="preparing" ${order.status === "preparing" ? "selected" : ""}>preparing</option>
+    <option value="ready" ${order.status === "ready" ? "selected" : ""}>ready</option>
+    <option value="completed" ${order.status === "completed" ? "selected" : ""}>completed</option>
+    </select>
+    `;
+    const statusSelect = orderCard.querySelector(".order-status");
+    statusSelect.addEventListener("change", async () => {
+      const newStatus = statusSelect.value;
+      const response = await fetch(
+        `${BACKEND_URL}/orders/${order._id}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Baerer ${token}`,
+          },
+          body: JSON.stringify({
+            status: newStatus,
+          }),
+        },
+      );
+      const data = response.json();
+    });
+
+    if (order.status === "completed") {
+      orderHistory.appendChild(orderCard);
+      orderCard.addEventListener("click", () => {
+        orderCard.classList.toggle("show-detail");
+      });
+    } else {
+      ordersList.appendChild(orderCard);
+    }
+  });
+  if (response.ok) {
+    console.log("Status updated");
+  } else {
+    alert(data.message);
+  }
+}
+historyBtn.addEventListener("click", () => {
+  orderHistory.classList.toggle("show");
+});
+// function playNotificationSound() { ooroo duu uusgej boloh function
+//   const audioContext = new AudioContext();
+//   const oscillator = audioContext.createOscillator();
+//   oscillator.frequency.value = 800;
+//   oscillator.connect(audioContext.destination);
+//   oscillator.start();
+//   oscillator.stop(audioContext.currentTime + 0.2);
+// }
+socket.on("new-order", () => {
+  getOrders();
+  orderSound.play();
+  orderNotification.textContent = " 🔔 Шинэ захиалга ирлээ. ";
+  setTimeout(() => {
+    orderNotification.textContent = "";
+  }, 6000);
+});
+
+// getOrders();
+// setInterval(getOrders, 5000);
 getFoods();
