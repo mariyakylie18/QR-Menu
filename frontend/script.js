@@ -44,9 +44,22 @@ socket.on("connect", () => {
   }
 });
 // let statusInterval = null;
+let selectedType = "food";
+const typeButtons = document.querySelectorAll(".type-btn");
 const prevPageBtn = document.getElementById("prev-page-btn");
 const nextPageBtn = document.getElementById("next-page-btn");
 const pageInfo = document.getElementById("page-info");
+typeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectedType = button.dataset.type;
+    selectedCategory = "";
+    typeButtons.forEach((btn) => {
+      btn.classList.remove("active");
+    });
+    button.classList.add("active");
+    getFoods();
+  });
+});
 
 socket.on("order-status-updated", (data) => {
   if (data.orderId === currentOrderId) {
@@ -132,11 +145,12 @@ async function getOrderStatus() {
   };
   console.log("Status check: ", status);
   orderStatus.textContent = statusMessages[status];
-  // if (status === "completed") {
-  //   clearInterval(statusInterval);
-  //   localStorage.removeItem("currentOrderId");
-  //   currentOrderId = null;
-  // }
+  if (status === "completed") {
+    localStorage.removeItem("currentOrderId");
+    localStorage.removeItem("trackingToken");
+    currentOrderId = null;
+    trackingToken = null;
+  }
 }
 if (currentOrderId) {
   getOrderStatus();
@@ -168,6 +182,9 @@ async function getFoods() {
     const search = searchInput.value.trim();
     // const category = categoryFilter.value();
     const params = new URLSearchParams();
+    if (selectedType) {
+      params.set("type", selectedType);
+    }
     params.set("page", currentPage);
     params.set("limit", 6);
     if (search) {
@@ -177,7 +194,8 @@ async function getFoods() {
     if (selectedCategory) {
       params.set("category", selectedCategory);
     }
-    const response = await fetch(`${API_URL}?${params.toString()}`);
+    console.log(params.toString());
+    const response = await fetch(`${BACKEND_URL}/foods?${params}`);
 
     if (!response.ok) {
       throw new Error("Foods avch chadsangui");

@@ -13,6 +13,11 @@ const foodSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+    Enum: ["food", "drink"],
+    required: false,
+  },
   description: {
     type: String,
   },

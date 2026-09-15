@@ -32,6 +32,7 @@ const orderNotification = document.getElementById("order-notification");
 const orderSound = document.getElementById("order-sound");
 const orderHistory = document.getElementById("order-history");
 const historyBtn = document.getElementById("history-btn");
+const foodType = document.getElementById("food-type");
 
 let currentPage = 1;
 let totalPages = 1;
@@ -373,6 +374,7 @@ addFoodForm.addEventListener("submit", async (event) => {
   }
 
   const formData = new FormData();
+  formData.append("type", foodType.value);
   formData.append("name", name);
   formData.append("price", price);
   formData.append("category", category);

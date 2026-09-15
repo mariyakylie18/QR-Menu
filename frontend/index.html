@@ -24,14 +24,12 @@
   <body>
     <main class="container">
       <button id="cart-btn" type="button">
-        🛒 Cart (<span id="cart-count">0</span>)
+        🛒 Захиалга (<span id="cart-count">0</span>)
       </button>
       <header class="menu-header">
-        <p class="restaurant-label">
-          AI 会社　ゆき美 Welcome to Our TEST　restaurant
-        </p>
-        <h1>Our TEST QR Menu　頑張って</h1>
-        <p class="restaurant-description">Choose your favourite food</p>
+        <p class="restaurant-label">Тавтай морилно уу</p>
+        <!-- <h1>Та захиалгаа өгнө үү</h1> -->
+        <p class="restaurant-description">Та захиалгаа сонгоно уу</p>
       </header>
 
       <section class="search-section">
@@ -45,7 +43,10 @@
         <button id="search-btn" type="button">Search</button>
         <!-- <button class="close-modal">x</button> -->
       </section>
-
+      <div class="menu-types">
+        <button class="type-btn active" data-type="food">Хоол</button>
+        <button class="type-btn" data-type="drink">Уух зүйл</button>
+      </div>
       <nav
         id="category-list"
         class="categories"
@@ -54,9 +55,9 @@
     </main>
     <div id="food-list"></div>
     <div class="pagination">
-      <button id="prev-page-btn" type="button">Previous</button>
+      <button id="prev-page-btn" type="button">Өмнөх</button>
       <span id="page-info">Page 1 / 1</span>
-      <button id="next-page-btn" type="button">Next</button>
+      <button id="next-page-btn" type="button">Дараагийн</button>
     </div>
     <script src="https://qr-menu-nd8d.onrender.com/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
