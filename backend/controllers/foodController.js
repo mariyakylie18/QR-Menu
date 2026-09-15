@@ -37,7 +37,12 @@ const getFoods = async (req, res) => {
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
-    const categories = await Food.distinct("category");
+    const categoryFilter = {};
+    if (type) {
+      categoryFilter.type = type;
+    }
+    const categories = (await Food) - distinct("category", categoryFilter);
+
     const totalCategories = categories.length;
 
     return res.status(200).json({
