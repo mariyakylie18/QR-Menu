@@ -41,7 +41,7 @@ const getFoods = async (req, res) => {
     if (type) {
       categoryFilter.type = type;
     }
-    const categories = (await Food) - distinct("category", categoryFilter);
+    const categories = await Food.distinct("category", categoryFilter);
 
     const totalCategories = categories.length;
 
