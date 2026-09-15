@@ -36,6 +36,10 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "preparing", "ready", "completed"],
       default: "pending",
     },
+    trackingToken: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

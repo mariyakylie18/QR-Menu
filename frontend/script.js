@@ -19,6 +19,11 @@ const placeOrderBtn = document.getElementById("place-order-btn");
 const orderStatus = document.getElementById("order-status");
 const BACKEND_URL = "https://qr-menu-nd8d.onrender.com";
 const socket = io(BACKEND_URL);
+// socket.on("connect", () => {
+//   if (currentOrderId) {
+//     socket.emit("join-order", currentOrderId);
+//   }
+// });
 if (tableNumber) {
   tableNumberText.textContent = `Table ${tableNumber}`;
 }
@@ -29,6 +34,15 @@ let cart = [];
 let currentPage = 1;
 let totalPages = 1;
 let currentOrderId = localStorage.getItem("currentOrderId");
+let trackingToken = localStorage.getItem("trackingToken");
+socket.on("connect", () => {
+  if (currentOrderId) {
+    socket.emit("join-order", {
+      orderId: currentOrderId,
+      trackingToken,
+    });
+  }
+});
 // let statusInterval = null;
 const prevPageBtn = document.getElementById("prev-page-btn");
 const nextPageBtn = document.getElementById("next-page-btn");
@@ -70,8 +84,7 @@ placeOrderBtn.addEventListener("click", async () => {
       quantity: item.quantity,
     })),
   };
-  $;
-  const response = await fetch(`${BACKEND_URL}/order`, {
+  const response = await fetch(`${BACKEND_URL}/orders`, {
     method: "POST",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify(orderData),
@@ -80,6 +93,9 @@ placeOrderBtn.addEventListener("click", async () => {
   if (response.ok) {
     currentOrderId = data.order._id;
     localStorage.setItem("currentOrderId", data.order._id);
+    trackingToken = data.order.trackingToken;
+    localStorage.setItem("trackingToken", data.order.trackingToken);
+    socket.emit("join-order", currentOrderId);
     getOrderStatus();
     // statusInterval = setInterval(getOrderStatus, 5000);
 
@@ -94,7 +110,9 @@ placeOrderBtn.addEventListener("click", async () => {
 });
 
 async function getOrderStatus() {
-  const response = await fetch(`${BACKEND_URL}/orders/${currentOrderId}`);
+  const response = await fetch(
+    `${BACKEND_URL}/orders/${currentOrderId}?trackingToken=${trackingToken}`,
+  );
   const data = await response.json();
 
   const status = data.order.status;

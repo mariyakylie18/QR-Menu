@@ -9,6 +9,8 @@ const Food = require("./models/Food");
 const foodRoutes = require("./routes/foodRoutes");
 const authRoutes = require("./routes/authRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const Order = require("./models/Order");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(
@@ -30,6 +32,29 @@ const io = new Server(server, {
 });
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
+  socket.on("join-order", async (data) => {
+    try {
+      const order = await Order.findById(data.orderId);
+      if (order && order.trackingToken === data.trackingToken) {
+        socket.join(`order:${data.orderId}`);
+      }
+    } catch (error) {
+      console.log("Order room join failed:", error.message);
+    }
+    // socket.join(`order:${orderId}`);
+  });
+  socket.on("join-admin", () => {
+    try {
+      const token = socket.handshake.auth.token;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      if (decoded.role === "admin") {
+        socket.join("admins");
+      }
+    } catch (error) {
+      console.log("Admin socket auth failed:", error.message);
+    }
+  });
 });
 app.set("io", io);
 app.use(express.json());
@@ -52,10 +77,6 @@ app.get("/", (req, res) => {
   res.send("QR menu server ajillaj baina");
 });
 
-
-
 server.listen(PORT, () => {
   console.log(`Server ${PORT} port deer aslaa`);
 });
-
-

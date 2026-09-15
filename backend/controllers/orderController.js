@@ -1,5 +1,6 @@
 const Order = require("../models/Order");
 const Food = require("../models/Food");
+const crypto = require("crypto");
 
 const createOrder = async (req, res) => {
   try {
@@ -40,15 +41,18 @@ const createOrder = async (req, res) => {
         quantity: orderItem.quantity,
       };
     });
+    const trackingToken = crypto.randomBytes(32).toString("hex");
     const order = new Order({
       tableNumber,
       items: orderItems,
       totalPrice,
+      trackingToken,
+      status: "pending",
     });
 
     await order.save();
     const io = req.app.get("io");
-    io.emit("new-order");
+    io.to("admins").emit("new-order");
     return res.status(201).json({
       message: "Order created successfully",
       order,
@@ -80,10 +84,16 @@ const getOrders = async (req, res) => {
 const getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
+    const { trackingToken } = req.query;
     const order = await Order.findById(id);
     if (!order) {
       return res.status(404).json({
         message: "Order not found",
+      });
+    }
+    if (order.trackingToken !== trackingToken) {
+      return res.status(403).json({
+        message: "Invalid tracking token",
       });
     }
     return res.status(200).json({
@@ -125,7 +135,7 @@ const updateOrderStatus = async (req, res) => {
     order.status = status;
     await order.save();
     const io = req.app.get("io");
-    io.emit("order-status-updated", {
+    io.to(`order:${order._id.toString()}`).emit("order-status-updated", {
       orderId: order._id.toString(),
       status: order.status,
     });

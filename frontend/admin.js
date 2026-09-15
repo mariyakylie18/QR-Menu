@@ -1,7 +1,12 @@
 const API_URL = "https://qr-menu-nd8d.onrender.com/foods";
 const token = localStorage.getItem("token");
 const BACKEND_URL = "https://qr-menu-nd8d.onrender.com";
-const socket = io(BACKEND_URL);
+const socket = io(BACKEND_URL, {
+  auth: { token },
+});
+socket.on("connect", () => {
+  socket.emit("join-admin");
+});
 
 const imageInput = document.getElementById("food-image");
 const imageBtn = document.getElementById("image-btn");
