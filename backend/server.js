@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
       const token = socket.handshake.auth.token;
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      if (decoded.role === "admin") {
+      if (decoded.role === "admin" || decoded.role === "kitchen") {
         socket.join("admins");
       }
     } catch (error) {
