@@ -90,7 +90,7 @@ function renderOrders(orders) {
       orderCard.classList.add("new-order");
     }
     const foodItems = order.items.filter((item) => item.type === "food");
-    if (foodname.length === 0) {
+    if (foodItems.length === 0) {
       return;
     }
     const itemsHtml = foodItems

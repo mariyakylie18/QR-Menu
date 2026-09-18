@@ -39,6 +39,7 @@ const createOrder = async (req, res) => {
         name: food.name,
         price: food.price,
         quantity: orderItem.quantity,
+        type: food.type,
       };
     });
     const trackingToken = crypto.randomBytes(32).toString("hex");

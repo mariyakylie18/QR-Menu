@@ -25,6 +25,11 @@ const orderSchema = new mongoose.Schema(
           required: true,
           min: 1,
         },
+        type: {
+          type: String,
+          enum: ["food", "drink"],
+          // required: true,
+        },
       },
     ],
     totalPrice: {
