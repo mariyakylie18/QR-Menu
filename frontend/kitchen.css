@@ -543,3 +543,40 @@ h1 {
   font-size: 14px;
   font-weight: 600;
 }
+
+.order-card {
+  position: relative;
+}
+
+.order-card.new-order {
+  animation: newOrderGlow 1s ease-in-out infinite alternate;
+}
+
+.new-order-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  padding: 5px 10px;
+
+  background: #e7c45d;
+  color: #111713;
+
+  border-radius: 20px;
+
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+@keyframes newOrderGlow {
+  from {
+    box-shadow: 0 0 8px rgba(231, 196, 93, 0.3);
+  }
+
+  to {
+    box-shadow:
+      0 0 18px rgba(231, 196, 93, 0.7),
+      0 0 35px rgba(231, 196, 93, 0.25);
+  }
+}

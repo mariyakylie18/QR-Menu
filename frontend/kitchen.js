@@ -5,16 +5,23 @@ const role = localStorage.getItem("role");
 if (!token || (role !== "admin" && role !== "kitchen")) {
   window.location.href = "login.html";
 }
+
+let newOrderId = null;
 const socket = io(BACKEND_URL, {
   auth: {
     token,
   },
 });
+const newOrderSound = new Audio("./sounds/bell.mp3");
 socket.on("connect", () => {
   socket.emit("join-admin");
 });
-socket.on("new-order", () => {
-  getOrders();
+socket.on("new-order", async () => {
+  newOrderSound.currentTime = 0;
+  newOrderSound.play().catch((error) => {
+    console.log("Sound play blocked:", error);
+  });
+  await getOrders();
 });
 
 async function getOrders() {
@@ -58,6 +65,9 @@ function renderOrders(orders) {
   activeOrders.forEach((order) => {
     const orderCard = document.createElement("div");
     orderCard.classList.add("order-card");
+    if (order._id === newOrderId) {
+      orderCard.classList.add("new-order");
+    }
     const itemsHtml = order.items
       .map((item) => {
         const quantity = item.quantity ?? item.qty ?? item.count ?? 1;
@@ -88,6 +98,11 @@ function renderOrders(orders) {
     }
 
     orderCard.innerHTML = `
+    ${
+      order._id === newOrderId
+        ? `<span class= "new-order-badge">Шинэ захиалга</span>`
+        : ""
+    }
      <div class= "order-header">
      <div class="table-info">
       <span class="table-label">Ширээ</span>
@@ -134,7 +149,7 @@ async function updateOrderStatus(orderId, status) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        status: nextStatus,
+        status: status,
       }),
     });
     const data = await response.json();
