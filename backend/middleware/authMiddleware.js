@@ -37,16 +37,13 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-const kitchenOrAdmin =(req, res, next) => {
-  if(
-    req.user.role !== "admin" &&
-req.user.role !== "kitchen"
-  ) {
+const kitchenOrAdmin = (req, res, next) => {
+  if (req.user.role !== "admin" && req.user.role !== "kitchen") {
     return res.status(403).json({
-      message: "Kitchen эсвэл Admin эрх шаардлагатай"ь
+      message: "Kitchen эсвэл Admin эрх шаардлагатай",
     });
   }
-next ();
+  next();
 };
 
 module.exports = { protect, adminOnly, kitchenOrAdmin };
