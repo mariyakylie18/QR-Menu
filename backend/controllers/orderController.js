@@ -137,7 +137,7 @@ const updateOrderStatus = async (req, res) => {
     await order.save();
 
     const io = req.app.get("io");
-    io.to(`order:${order._idtoString()}`).emit("order-status-updated", {
+    io.to(`order:${order._id.toString()}`).emit("order-status-updated", {
       orderId: order._id.toString(),
       status: order.status,
     });
@@ -157,6 +157,7 @@ const updateOrderStatus = async (req, res) => {
 
     return res.status(500).json({
       message: "Failed to update order status",
+      error: error.message,
     });
   }
 };
