@@ -12,23 +12,23 @@
     <header class="admin-header">
       <div>
         <h1>Admin Panel</h1>
-        <p>Manage restaurant menu</p>
+        <p>Менюгаа удирдах</p>
       </div>
-      <button id="logout-btn">Logout</button>
+      <button id="logout-btn">Гарах товч</button>
     </header>
 
     <section class="stats">
       <div class="stat-card">
-        <p>Total Foods</p>
+        <p>Нийт хоол</p>
         <h2 id="total-foods">0</h2>
       </div>
       <div class="stat-card">
-        <p>Categories</p>
+        <p>Категори</p>
         <h2 id="total-categories">0</h2>
       </div>
     </section>
 
-    <button id="open-add-food-btn" type="button">+ Add food</button>
+    <button id="open-add-food-btn" type="button">+ Шинээр нэмэх</button>
     <div id="order-noification"></div>
     <section class="admin-section">
       <div id="food-modal" class="modal">
@@ -46,7 +46,7 @@
               />
             </div>
             <div id="form-group">
-              <label for="food-price">Price</label>
+              <label for="food-price">Үнэ</label>
               <input
                 id="food-price"
                 type="number"
@@ -58,15 +58,15 @@
             </div>
             <div id="form-group">
               <label for="food-category">Category</label>
-              <label for="food-type">Type</label>
+              <label for="food-type">Төрөл</label>
               <select id="food-type" required>
-                <option value="food">Food</option>
-                <option value="drink">Drink</option>
+                <option value="food">Хоол</option>
+                <option value="drink">Уух зүйл</option>
               </select>
               <select id="food-category" required></select>
             </div>
             <div id="form-group">
-              <label for="food-description">Description</label>
+              <label for="food-description">Тайлбар</label>
               <input
                 id="food-description"
                 type="text"
@@ -75,51 +75,50 @@
               />
             </div>
             <input id="food-image" type="file" accept="image/*" hidden />
-            <button type="button" id="image-btn">Choose image</button>
-            <span id="image-text">No image selected</span>
+            <button type="button" id="image-btn">Зураг сонгох</button>
+            <span id="image-text">Зураг сонгоно уу</span>
             <img id="current-image-preview" width="120" />
             <p id="image-note"></p>
             <button id="submit-food-btn" type="submit">Add Food</button>
           </form>
         </div>
       </div>
-      <h2>Food</h2>
+      <h2>Хоол</h2>
       <div class="food-tools">
         <input type="search" id="food-search" placeholder="Search foods..." />
 
         <select id="category-filter">
-          <option value="">All categories</option>
+          <option value="">Бүх төрөл</option>
         </select>
         <select id="sort-filter">
-          <option value="">All prices</option>
-          <option value="oldest">Oldest</option>
-          <option value="newest">Newest</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
+          <option value="">Ангилал</option>
+          <option value="oldest">Хуучнаас..</option>
+          <option value="newest">Шинээс..</option>
+          <option value="price-asc">Үнэ: багаас ихрүү</option>
+          <option value="price-desc">Үнэ: Ихээс бага руу</option>
         </select>
 
-        <button id="search-btn" type="submit">Search</button>
-        <button type="button" id="clear-filter-btn">Clear</button>
+        <button id="search-btn" type="submit">Хайх</button>
+        <button type="button" id="clear-filter-btn">Арилгах</button>
       </div>
       <div id="food-list"></div>
       <div id="orders-list"></div>
       <button id="history-btn">Захиалгын түүх</button>
       <div id="order-history"></div>
       <div id="pagination" class="pagination">
-        <button type="button" id="prev-page-btn">Previous</button>
+        <button type="button" id="prev-page-btn">Өмнөх</button>
         <span id="page-info">Хуудас 1 / 1</span>
-        <button type="button" id="next-page-btn">Next</button>
+        <button type="button" id="next-page-btn">Дараах</button>
       </div>
       <div id="delete-modal" class="modal">
         <div class="modal-content delete-modal-content">
-          <h2>Delete Food?</h2>
+          <h2>Хоол устгах?</h2>
           <p>
-            Are you sure you want to delete this food? This action cannot be
-            undone.
+            Та устгахдаа итгэлтэй байна уу? Устгавал дахин сэргээх боломжгүй.
           </p>
           <div class="delete-actions">
-            <button type="button" id="cancel-delete-btn">Cancel</button>
-            <button type="button" id="confirm-delete-btn">Delete</button>
+            <button type="button" id="cancel-delete-btn">Буцах</button>
+            <button type="button" id="confirm-delete-btn">Устгах</button>
           </div>
         </div>
       </div>

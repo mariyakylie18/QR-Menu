@@ -11,7 +11,7 @@ const socket = io(BACKEND_URL, {
 socket.on("connect", () => {
   socket.emit("join-admin");
 });
-
+const kitchenReadySound = new Audio("./sounds/ready.mp3");
 const imageInput = document.getElementById("food-image");
 const imageBtn = document.getElementById("image-btn");
 const imageText = document.getElementById("image-text");
@@ -573,12 +573,41 @@ historyBtn.addEventListener("click", () => {
 // }
 socket.on("new-order", () => {
   getOrders();
-  orderSound.play();
-  orderNotification.textContent = " 🔔 Шинэ захиалга ирлээ. ";
-  setTimeout(() => {
-    orderNotification.textContent = "";
-  }, 6000);
+  orderSound.currentTime = 0;
+  orderSound.play().catch((error) => {
+    console.log("New order sound blocked:", error);
+  });
+  showToast(" 🔔 Шинэ захиалга ирлээ", "success");
 });
+
+socket.on("order-ready", (data) => {
+  console.log("Order ready recieved:", data);
+  kitchenReadySound.currentTime = 0;
+  kitchenReadySound.play().catch((error) => {
+    console.log("Ready sound blocked;", error);
+  });
+  showToast(`Ширээ ${data.tableNumber}-ийн хоол бэлэн боллоо`, "success");
+  getOrders();
+});
+
+document.addEventListener(
+  "click",
+  async () => {
+    const sounds = [orderSound, kitchenReadySound];
+    for (const sound of sounds) {
+      try {
+        sound.volume = 0;
+        await sound.play();
+        sound.pause();
+        sound.currentTime = 0;
+        sound.volume = 1;
+      } catch (error) {
+        console.log("Audio unlock error:", error);
+      }
+    }
+  },
+  { once: true },
+);
 
 getOrders();
 // setInterval(getOrders, 5000);

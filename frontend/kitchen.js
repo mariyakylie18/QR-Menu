@@ -1,5 +1,5 @@
-const BACKEND_URL = "https://qr-menu-nd8d.onrender.com";
 const kitchenOrders = document.getElementById("kitchen-orders");
+const BACKEND_URL = "https://qr-menu-nd8d.onrender.com";
 const token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
 if (!token || (role !== "admin" && role !== "kitchen")) {
@@ -13,15 +13,37 @@ const socket = io(BACKEND_URL, {
   },
 });
 const newOrderSound = new Audio("./sounds/bell.mp3");
+const newOrderAlert = document.getElementById("new-order-alert");
+let newOrderAlertTimer;
+const kitchenLogoutBtn = document.getElementById("kitchen-logout-btn");
+kitchenLogoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("user");
+
+  window.location.href = "login.html";
+});
 socket.on("connect", () => {
   socket.emit("join-admin");
 });
+
 socket.on("new-order", async () => {
   newOrderSound.currentTime = 0;
+
   newOrderSound.play().catch((error) => {
     console.log("Sound play blocked:", error);
   });
   await getOrders();
+
+  if (newOrderAlert) {
+    newOrderAlert.classList.add("show");
+
+    clearTimeout(newOrderAlertTimer);
+
+    newOrderAlertTimer = setTimeout(() => {
+      newOrderAlert.classList.remove("show");
+    }, 10000);
+  }
 });
 
 async function getOrders() {
@@ -48,7 +70,6 @@ getOrders();
 
 const statusText = {
   pending: " Хүлээгдэж байна",
-  confirmed: "Баталгаажсан",
   preparing: "Бэлтгэж байна",
   ready: "Бэлэн",
   completed: "Дууссан",
@@ -68,9 +89,13 @@ function renderOrders(orders) {
     if (order._id === newOrderId) {
       orderCard.classList.add("new-order");
     }
-    const itemsHtml = order.items
+    const foodItems = order.items.filter((item) => item.type === "food");
+    if (foodname.length === 0) {
+      return;
+    }
+    const itemsHtml = foodItems
       .map((item) => {
-        const quantity = item.quantity ?? item.qty ?? item.count ?? 1;
+        const quantity = item.quantity ?? 1;
         return `
       <div class="kitchen-item">
       <span class="kitchen-item-name">
@@ -124,8 +149,6 @@ function renderOrders(orders) {
     statusBtn.addEventListener("click", () => {
       let nextStatus;
       if (order.status === "pending") {
-        nextStatus = "confirmed";
-      } else if (order.status === "confirmed") {
         nextStatus = "preparing";
       } else if (order.status === "preparing") {
         nextStatus = "ready";
