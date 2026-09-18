@@ -21,17 +21,20 @@ loginForm.addEventListener("submit", async (event) => {
         }),
       },
     );
-
     const data = await response.json();
-
     if (!response.ok) {
       throw new Error(data.message || "Login failed");
     }
 
     localStorage.setItem("token", data.token);
-
     localStorage.setItem("user", JSON.stringify(data.user));
-    window.location.href = "admin.html";
+    localStorage.setItem("role", data.user.role);
+
+    if (data.user.role === "admin") {
+      window.location.href = "admin.html";
+    } else if (data.user.role === "kitchen") {
+      window.location.href = "kitchen.html";
+    }
   } catch (error) {
     message.textContent = error.message;
   }

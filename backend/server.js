@@ -37,6 +37,7 @@ io.on("connection", (socket) => {
       const order = await Order.findById(data.orderId);
       if (order && order.trackingToken === data.trackingToken) {
         socket.join(`order:${data.orderId}`);
+        console.log("CUSTOMER JOINED ROOM:", `order:${data.orderId}`);
       }
     } catch (error) {
       console.log("Order room join failed:", error.message);

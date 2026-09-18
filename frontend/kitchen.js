@@ -1,6 +1,10 @@
 const BACKEND_URL = "https://qr-menu-nd8d.onrender.com";
 const kitchenOrders = document.getElementById("kitchen-orders");
 const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+if (!token || (role !== "admin" && role !== "kitchen")) {
+  window.location.href = "login.html";
+}
 const socket = io(BACKEND_URL, {
   auth: {
     token,
@@ -20,6 +24,13 @@ async function getOrders() {
         Authorization: `Baerer ${token}`,
       },
     });
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("user");
+      window.location.href = "login.html";
+      return;
+    }
     const data = await response.json();
     renderOrders(data.orders);
   } catch (error) {
@@ -27,6 +38,15 @@ async function getOrders() {
   }
 }
 getOrders();
+
+const statusText = {
+  pending: " Хүлээгдэж байна",
+  confirmed: "Баталгаажсан",
+  preparing: "Бэлтгэж байна",
+  ready: "Бэлэн",
+  completed: "Дууссан",
+};
+
 function renderOrders(orders) {
   kitchenOrders.innerHTML = "";
   const activeOrders = orders.filter((order) => {
@@ -40,13 +60,22 @@ function renderOrders(orders) {
     orderCard.classList.add("order-card");
     const itemsHtml = order.items
       .map((item) => {
-        return `<p>${item.quantity} x ${item.name}</p>`;
+        const quantity = item.quantity ?? item.qty ?? item.count ?? 1;
+        return `
+      <div class="kitchen-item">
+      <span class="kitchen-item-name">
+      ${item.name}
+      </span>
+      <span class="kitchen-item-quantity"> x ${quantity} </span>
+      </div>
+      `;
       })
       .join("");
 
-    const time = new Date(order.createdAt).toLocaleTimeString("mn-MN", {
+    const time = new Date(order.createdAt).toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
     });
     const waitingMinutes = Math.floor(
       (Date.now() - new Date(order.createdAt).getTime()) / 60000,
@@ -57,38 +86,25 @@ function renderOrders(orders) {
     } else if (waitingMinutes >= 10) {
       waitingClass = "late";
     }
-    orderCard.innerHTML = `
-   <div class= "order-header">
-   <div>
-   <span class="table-label">TABLE</span>
-   <h2>${order.tableNumber}</h2>
-   </div>
-   <div class="order-time">
-   <span>${time}</span>
-   <span class="waiting-time ${waitingClass}">
-   ${waitingMinutes} min waiting
-   </span>
-   </div>
-   </div>
 
-    <div class="order-items> ${itemsHtml}</div>
-    <p class="status ${order.status}"> 
-    ${order.status.toUpperCase()}
-    </p>
-    <button class = "status-btn">
-    ${
-      order.status === "pending"
-        ? "Confirm"
-        : order.status === "confirmed"
-          ? "Start Preparing"
-          : order.status === "preparing"
-            ? "Ready"
-            : order.status === "ready"
-              ? "Complete"
-              : "Completed"
-    }
-    </button>
-    `;
+    orderCard.innerHTML = `
+     <div class= "order-header">
+     <div class="table-info">
+      <span class="table-label">Ширээ</span>
+      <h2>${order.tableNumber}</h2>
+     </div>
+    
+     <div class="order-time">
+      <span class="order-clock">${time}</span>
+      <span class="waiting-time ${waitingClass}">
+      ${waitingMinutes} мин хүлээгдэж байнав
+       </span>
+     </div>
+     <div>
+      <div class="order-items"> ${itemsHtml}</div>
+     <button class="status-btn status-${order.status}">${statusText[order.status]}</button>
+      `;
+
     const statusBtn = orderCard.querySelector(".status-btn");
     statusBtn.addEventListener("click", () => {
       let nextStatus;
@@ -118,7 +134,7 @@ async function updateOrderStatus(orderId, status) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        status: status,
+        status: nextStatus,
       }),
     });
     const data = await response.json();

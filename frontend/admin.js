@@ -1,5 +1,9 @@
 const API_URL = "https://qr-menu-nd8d.onrender.com/foods";
 const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
+if (!token || role !== "admin") {
+  window.location.href = "login.html";
+}
 const BACKEND_URL = "https://qr-menu-nd8d.onrender.com";
 const socket = io(BACKEND_URL, {
   auth: { token },
@@ -33,7 +37,37 @@ const orderSound = document.getElementById("order-sound");
 const orderHistory = document.getElementById("order-history");
 const historyBtn = document.getElementById("history-btn");
 const foodType = document.getElementById("food-type");
+const foodCategory = document.getElementById("food-category");
 
+// foodType.addEventListener("change", () => {
+function updateCategories() {
+  console.log("UPDATE:", foodType.value);
+  if (foodType.value === "food") {
+    foodCategory.innerHTML = `
+  <option value ="">Category сонгох</option>
+  <option value ="1-р хоол">1-р хоол</option>
+  <option value ="2-р хоол">2-р хоол</option>
+  <option value ="Тахиан махтай хоол">Тахиан махтай хоол</option>
+  <option value ="Солонгос хоол">Солонгос хоол</option>
+  <option value ="Пицца">Пицца</option>
+  <option value ="Хачир, салат">Хачир, салат</option>
+  <option value ="Багцын хоол">Багцын хоол</option>
+  <option value ="Цагаан хоол">Цагаан хоол</option>
+  <option value ="Амттан">Амттан</option>
+  `;
+  } else if (foodType.value === "drink") {
+    foodCategory.innerHTML = `
+     <option value ="">Category сонгох</option>
+     <option value ="Soft drink">Soft drink</option>
+     <option value ="Халуун уух зүйл">Халуун уух зүйл</option>
+     <option value ="Коктэйл">Коктэйл</option>
+     <option value ="Хүйтэн шар айраг">Хүйтэн шар айраг</option>
+     <option value ="Бусад">Бусад</option>
+    `;
+  }
+}
+
+foodType.addEventListener("change", updateCategories);
 let currentPage = 1;
 let totalPages = 1;
 
@@ -81,7 +115,7 @@ const categoryFilter = document.getElementById("category-filter");
 openAddFoodBtn.addEventListener("click", () => {
   editingFoodId = null;
   addFoodForm.reset();
-
+  updateCategories();
   submitButton.textContent = "Add Food";
   formTitle.textContent = "Add Food";
   imageBtn.textContent = "Choose image";
@@ -233,6 +267,9 @@ function renderFoods(foods) {
   }
   foods.forEach((food) => {
     const card = document.createElement("div");
+    foodType.value = food.type;
+    updateCategories();
+    foodCategory.value = food.category;
     card.classList.add("food-card");
 
     card.innerHTML = `
@@ -459,6 +496,7 @@ async function getOrders() {
     const orderTime = new Date(order.createdAt).toLocaleTimeString();
     const orderDate = new Date(order.createdAt).toLocaleDateString();
     const orderCard = document.createElement("div");
+    orderCard.classList.add("order-card");
     if (order.status === "pending") {
       orderCard.classList.add("new-order");
     } else {
@@ -471,7 +509,7 @@ async function getOrders() {
     ${itemsHtml}
     <p>Total: ${order.totalPrice.toLocaleString()}₮</p>
     </div>
-    <select class= "order-status">
+    <select class= "order-status status-${order.status}">
     <option value="pending" ${order.status === "pending" ? "selected" : ""}>pending</option>
     <option value="confirmed" ${order.status === "confirmed" ? "selected" : ""}>confirmed</option>
     <option value="preparing" ${order.status === "preparing" ? "selected" : ""}>preparing</option>
@@ -480,8 +518,17 @@ async function getOrders() {
     </select>
     `;
     const statusSelect = orderCard.querySelector(".order-status");
+    statusSelect.classList.add(`status-${order.status}`);
     statusSelect.addEventListener("change", async () => {
       const newStatus = statusSelect.value;
+      statusSelect.classList.remove(
+        "status-pending",
+        "status-confirmed",
+        "status-preparing",
+        "status-ready",
+        "status-completed",
+      );
+      statusSelect.classList.add(`status-${newStatus}`);
       const response = await fetch(
         `${BACKEND_URL}/orders/${order._id}/status`,
         {
@@ -533,6 +580,6 @@ socket.on("new-order", () => {
   }, 6000);
 });
 
-// getOrders();
+getOrders();
 // setInterval(getOrders, 5000);
 getFoods();

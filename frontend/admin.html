@@ -29,7 +29,7 @@
     </section>
 
     <button id="open-add-food-btn" type="button">+ Add food</button>
-    <div id="order-notification"></div>
+    <div id="order-noification"></div>
     <section class="admin-section">
       <div id="food-modal" class="modal">
         <div class="modal-content">
@@ -63,14 +63,7 @@
                 <option value="food">Food</option>
                 <option value="drink">Drink</option>
               </select>
-              <select id="food-category" required>
-                <option value="">Select Categories</option>
-                <option value="Food">Food</option>
-                <option value="Drink">Drink</option>
-                <option value="Burger">Burger</option>
-                <option value="Pizza">Pizza</option>
-                <option value="Dessert">Dessert</option>
-              </select>
+              <select id="food-category" required></select>
             </div>
             <div id="form-group">
               <label for="food-description">Description</label>
@@ -93,8 +86,7 @@
       <h2>Food</h2>
       <div class="food-tools">
         <input type="search" id="food-search" placeholder="Search foods..." />
-        <button id="search-btn" type="submit">Search</button>
-        <button type="button" id="clear-filter-btn">Clear</button>
+
         <select id="category-filter">
           <option value="">All categories</option>
         </select>
@@ -105,6 +97,9 @@
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
         </select>
+
+        <button id="search-btn" type="submit">Search</button>
+        <button type="button" id="clear-filter-btn">Clear</button>
       </div>
       <div id="food-list"></div>
       <div id="orders-list"></div>
@@ -112,7 +107,7 @@
       <div id="order-history"></div>
       <div id="pagination" class="pagination">
         <button type="button" id="prev-page-btn">Previous</button>
-        <span id="page-info">Page 1 / 1</span>
+        <span id="page-info">Хуудас 1 / 1</span>
         <button type="button" id="next-page-btn">Next</button>
       </div>
       <div id="delete-modal" class="modal">
