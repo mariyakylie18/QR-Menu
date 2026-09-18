@@ -86,6 +86,7 @@ const getOrderById = async (req, res) => {
     const { id } = req.params;
     const { trackingToken } = req.query;
     const order = await Order.findById(id);
+
     if (!order) {
       return res.status(404).json({
         message: "Order not found",
@@ -134,12 +135,19 @@ const updateOrderStatus = async (req, res) => {
     }
     order.status = status;
     await order.save();
+
     const io = req.app.get("io");
-    io.to(`order:${order._id.toString()}`).emit("order-status-updated", {
+    io.to(`order:${order._idtoString()}`).emit("order-status-updated", {
       orderId: order._id.toString(),
       status: order.status,
     });
-
+    if (order.status === "ready") {
+      console.log("🔔👩🏻‍🍳 ORDER READY:", order.tableNumber);
+      io.to("admins").emit("order-ready", {
+        orderId: order._id.toString(),
+        tableNumber: order.tableNumber,
+      });
+    }
     return res.status(200).json({
       message: "Order status updated successfully",
       order,
