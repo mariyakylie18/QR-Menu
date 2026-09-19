@@ -45,9 +45,16 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    expiresAt: {
+      type: Date,
+      default: null,
+    },
   },
+
   {
     timestamps: true,
   },
 );
+orderSchema.index({ expiresAt: 1 }, { expiresAfterSeconds: 0 });
 module.exports = mongoose.model("Order", orderSchema);

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Menu Admin</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <div id="toast" class="toast"></div>
+  <audio id="order-sound" src="./sounds/bell.mp3"></audio>
+  <body>
+    <header class="admin-header">
+      <div>
+        <h1>Админ хэсэг</h1>
+        <p>Ресторанаа удирдах</p>
+      </div>
+      <button id="logout-btn">Гарах товч</button>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card">
+        <p>Нийт хоол</p>
+        <h2 id="total-foods">0</h2>
+      </div>
+      <div class="stat-card">
+        <p>Категори</p>
+        <h2 id="total-categories">0</h2>
+      </div>
+    </section>
+
+    <button id="open-add-food-btn" type="button">+ Шинээр нэмэх</button>
+    <div id="order-noification"></div>
+    <section class="admin-section">
+      <div id="food-modal" class="modal">
+        <div class="modal-content">
+          <button id="close-modal-btn" type="button"></button>
+          <h2 id="form-title">Менюнд нэмэх</h2>
+          <form id="add-food-form">
+            <div id="form-group">
+              <label for="food-name">Хоолны нэр</label>
+              <input
+                id="food-name"
+                type="text"
+                placeholder="бургер г.м"
+                required
+              />
+            </div>
+            <div id="form-group">
+              <label for="food-price">Үнэ</label>
+              <input
+                id="food-price"
+                type="number"
+                placeholder="15000 г.м"
+                min="0"
+                step="100"
+                required
+              />
+            </div>
+            <div id="form-group">
+              <label for="food-category"></label>
+              <label for="food-type">Төрөл</label>
+              <select id="food-type" required>
+                <option value="food">Хоол</option>
+                <option value="drink">Уух зүйс</option>
+              </select>
+              <select id="food-category" required></select>
+            </div>
+            <div id="form-group">
+              <label for="food-description">Тайлбар</label>
+              <input
+                id="food-description"
+                type="text"
+                placeholder="Тайлбар"
+                required
+              />
+            </div>
+            <input id="food-image" type="file" accept="image/*" hidden />
+            <button type="button" id="image-btn">Зураг сонгох</button>
+            <span id="image-text">Зураг сонгоно уу</span>
+            <img id="current-image-preview" width="120" />
+            <p id="image-note"></p>
+            <button id="submit-food-btn" type="submit">Шинээр нэмэх</button>
+          </form>
+        </div>
+      </div>
+      <div class="admin-type-tabs">
+        <button class="admin-type-btn active" data-type="">Бүгд</button>
+
+        <button class="admin-type-btn" data-type="food">Хоол</button>
+
+        <button class="admin-type-btn" data-type="drink">Уух зүйлс</button>
+      </div>
+      <div class="food-tools">
+        <input type="search" id="food-search" placeholder="Нэрээр нь хайх..." />
+        <select id="category-filter">
+          <option value="">Бүх төрөл</option>
+        </select>
+        <select id="sort-filter">
+          <option value="">Ангилал</option>
+          <option value="oldest">Хуучнаас..</option>
+          <option value="newest">Шинээс..</option>
+          <option value="price-asc">Үнэ: багаас ихрүү</option>
+          <option value="price-desc">Үнэ: Ихээс бага руу</option>
+        </select>
+
+        <button id="search-btn" type="submit">Хайх</button>
+        <button type="button" id="clear-filter-btn">Арилгах</button>
+      </div>
+      <div id="food-list"></div>
+      <div id="orders-list"></div>
+      <button id="history-btn">Захиалгын түүх</button>
+      <div id="order-history"></div>
+      <div id="pagination" class="pagination">
+        <button type="button" id="prev-page-btn">Өмнөх</button>
+        <span id="page-info">Хуудас 1 / 1</span>
+        <button type="button" id="next-page-btn">Дараах</button>
+      </div>
+      <div id="delete-modal" class="modal">
+        <div class="modal-content delete-modal-content">
+          <h2>Хоол устгах?</h2>
+          <p>
+            Та устгахдаа итгэлтэй байна уу? Устгавал дахин сэргээх боломжгүй.
+          </p>
+          <div class="delete-actions">
+            <button type="button" id="cancel-delete-btn">Буцах</button>
+            <button type="button" id="confirm-delete-btn">Устгах</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="https://qr-menu-nd8d.onrender.com/socket.io/socket.io.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

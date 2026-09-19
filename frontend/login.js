@@ -31,9 +31,9 @@ loginForm.addEventListener("submit", async (event) => {
     localStorage.setItem("role", data.user.role);
 
     if (data.user.role === "admin") {
-      window.location.href = "admin.html";
+      window.location.href = "ResUlAd.html";
     } else if (data.user.role === "kitchen") {
-      window.location.href = "kitchen.html";
+      window.location.href = "ResUlKit.html";
     }
   } catch (error) {
     message.textContent = error.message;

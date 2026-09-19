@@ -20,13 +20,13 @@ const createOrder = async (req, res) => {
         message: "One or more foods not found",
       });
     }
-    
-  const unavailableFood = foods.find((food) => food.isAvailable === false);
-  if (unavailableFood) {
-    return res.status(400).json({
-      message: `${unavailableFood.name} түр дууссан байна`,
-    });
-  }
+
+    const unavailableFood = foods.find((food) => food.isAvailable === false);
+    if (unavailableFood) {
+      return res.status(400).json({
+        message: `${unavailableFood.name} түр дууссан байна`,
+      });
+    }
 
     let totalPrice = 0;
     foods.forEach((food) => {
@@ -142,6 +142,11 @@ const updateOrderStatus = async (req, res) => {
       });
     }
     order.status = status;
+    if (status === "completed") {
+      order.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    } else {
+      order.expiresAt = null;
+    }
     await order.save();
 
     const io = req.app.get("io");

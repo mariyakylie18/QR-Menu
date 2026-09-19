@@ -1599,7 +1599,7 @@ body {
 .menu-type-row .image-note {
   margin: 0;
   max-width: 120px;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.35;
   text-align: right;
   color: #8f938f;
@@ -1623,7 +1623,7 @@ body {
 
   .image-note {
     max-width: 115px;
-    font-size: 10px;
+    font-size: 14px;
   }
 }
 
