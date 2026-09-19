@@ -8,13 +8,14 @@ const {
   getFoodById,
   updateFood,
   deleteFood,
+  updateFoodAvailability,
 } = require("../controllers/foodController");
 
 const router = express.Router();
 
 router.get("/", getFoods);
 router.post("/", protect, adminOnly, upload.single("image"), createFood);
-router.patch("/:id", protect, adminOnly, upload.single("image"), updateFood);
+router.patch("/:id", protect, adminOnly, updateFoodAvailability, upload.single("image"), updateFood);
 router.delete("/:id", protect, adminOnly, deleteFood);
 
 module.exports = router;

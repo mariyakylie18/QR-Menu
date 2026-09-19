@@ -24,6 +24,10 @@ const foodSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  isAvailable: {
+    type: Boolean,
+    default: true,
+  },
 });
 const Food = mongoose.model("Food", foodSchema);
 

@@ -209,10 +209,41 @@ const deleteFood = async (req, res) => {
   }
 };
 
+const updateFoodAvailability = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isAvailable } = req.body;
+
+    const food = await Food.findByIdAndUpdate(
+      id,
+      { isAvailable },
+      { new: true }
+    );
+
+    if (!food) {
+      return res.status(404).json({
+        message: "Food not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Availability updated",
+      food,
+    });
+  } catch (error) {
+    console.log("Availability update error:", error);
+
+    return res.status(500).json({
+      message: "Failed to update availability",
+    });
+  }
+};
+
 module.exports = {
   getFoods,
   createFood,
   getFoodById,
   updateFood,
   deleteFood,
+  updateFoodAvailability,
 };
