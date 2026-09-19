@@ -26,7 +26,7 @@ const customerHistoryItems = document.getElementById("customer-history-items");
 const closeCustomerHistoryBtn = document.getElementById(
   "close-customer-history-btn",
 );
-const requestBillBtn = document.getElementById("request-bill-btn")
+const requestBillBtn = document.getElementById("request-bill-btn");
 if (tableNumber) {
   tableNumberText.textContent = `Ширээ ${tableNumber}`;
 }
@@ -155,52 +155,69 @@ placeOrderBtn.addEventListener("click", async () => {
 
 requestBillBtn.addEventListener("click", () => {
   if (!tableNumber) {
-    alert("Ширээний дугаар олдсонгүй."); 
-    return
+    alert("Ширээний дугаар олдсонгүй.");
+    return;
   }
   socket.emit("request-bill", {
-    tableNumber, 
+    tableNumber,
   });
-  requestBillBtn.textContent = " Хүсэлт илгээгдлээ" 
+  requestBillBtn.textContent = " Хүсэлт илгээгдлээ";
   requestBillBtn.disabled = true;
   setTimeout(() => {
     requestBillBtn.textContent = "💳 Тооцоо авах";
     requestBillBtn.disabled = false;
   }, 10000);
-})
+});
 
 async function getOrderStatus() {
-  const response = await fetch(
-    `${BACKEND_URL}/orders/${currentOrderId}?trackingToken=${trackingToken}`,
-  );
-  const data = await response.json();
+  try {
+    if (!currentOrderId || !trackingToken) {
+      return;
+    }
 
-  const status = data.order.status;
-  const statusMessages = {
-    pending: "Захиалга хүлээн авлаа",
-    confirmed: "Захиалга баталгаажлаа",
-    preparing: "Захиалгыг бэлдэж байна",
-    ready: "Захиалга бэлэн боллоо.",
-    completed:
-      "Захиалга амжилттай дууслаа. Та кассан дээр тооцоогооо хийнэ үү.",
-  };
-  const statusSteps = {
-    pending: 0,
-    confirmed: 1,
-    preparing: 2,
-    ready: 3,
-    completed: 4,
-  };
-  console.log("Status check: ", status);
-  orderStatus.textContent = statusMessages[status];
-  if (status === "completed") {
-    localStorage.removeItem(`currentOrderId_table_${tableNumber}`);
-    localStorage.removeItem(`trackingToken_table_${tableNumber}`);
-    currentOrderId = null;
-    trackingToken = null;
+    const response = await fetch(
+      `${BACKEND_URL}/orders/${currentOrderId}?trackingToken=${encodeURIComponent(trackingToken)}`,
+    );
+    const data = await response.json();
+    if (!response.ok || !data.order) {
+      console.log("order not found", data.message);
+      localStorage.removeItem(`currentOrderId_table_${tableNumber}`);
+      localStorage.removeItem(`trackingToken_table_${tableNumber}`);
+      currentOrderId = null;
+      trackingToken = null;
+      orderStatus.textContent = "";
+      return;
+    }
+    const status = data.order.status;
+    const statusMessages = {
+      pending: "Захиалга хүлээн авлаа",
+      confirmed: "Захиалга баталгаажлаа",
+      preparing: "Захиалгыг бэлдэж байна",
+      ready: "Захиалга бэлэн боллоо.",
+      completed:
+        "Захиалга амжилттай дууслаа. Та кассан дээр тооцоогооо хийнэ үү.",
+    };
+    const statusSteps = {
+      pending: 0,
+      confirmed: 1,
+      preparing: 2,
+      ready: 3,
+      completed: 4,
+    };
+    console.log("Status check: ", status);
+    orderStatus.textContent = statusMessages[status];
+    if (status === "completed") {
+      localStorage.removeItem(`currentOrderId_table_${tableNumber}`);
+      localStorage.removeItem(`trackingToken_table_${tableNumber}`);
+      currentOrderId = null;
+      trackingToken = null;
+    }
+  } catch (error) {
+    console.log("Order status error:", error);
   }
 }
-if (currentOrderId) {
+
+if (currentOrderId && trackingToken) {
   getOrderStatus();
 } else {
   orderStatus.textContent = "";
@@ -294,9 +311,9 @@ function getImageUrl(image) {
 }
 
 function renderFoods(foods) {
-  const availableFoods = foods.filter((food) => food.isAvailable !== false)
+  const availableFoods = foods.filter((food) => food.isAvailable !== false);
   foodList.innerHTML = "";
-   availableFoods.forEach((food) => {
+  availableFoods.forEach((food) => {
     const card = document.createElement("article");
 
     card.classList.add("food-card");
