@@ -26,11 +26,7 @@ const customerHistoryItems = document.getElementById("customer-history-items");
 const closeCustomerHistoryBtn = document.getElementById(
   "close-customer-history-btn",
 );
-// socket.on("connect", () => {
-//   if (currentOrderId) {
-//     socket.emit("join-order", currentOrderId);
-//   }
-// });
+const requestBillBtn = document.getElementById("request-bill-btn")
 if (tableNumber) {
   tableNumberText.textContent = `Ширээ ${tableNumber}`;
 }
@@ -156,6 +152,22 @@ placeOrderBtn.addEventListener("click", async () => {
     alert(data.message);
   }
 });
+
+requestBillBtn.addEventListener("click", () => {
+  if (!tableNumber) {
+    alert("Ширээний дугаар олдсонгүй."); 
+    return
+  }
+  socket.emit("request-bill", {
+    tableNumber, 
+  });
+  requestBillBtn.textContent = " Хүсэлт илгээгдлээ" 
+  requestBillBtn.disabled = true;
+  setTimeout(() => {
+    requestBillBtn.textContent = "💳 Тооцоо авах";
+    requestBillBtn.disabled = false;
+  }, 10000);
+})
 
 async function getOrderStatus() {
   const response = await fetch(

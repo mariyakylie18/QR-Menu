@@ -56,6 +56,13 @@ io.on("connection", (socket) => {
       console.log("Admin socket auth failed:", error.message);
     }
   });
+
+  socket.on("request-bill", (data) => {
+    console.log("BILL REQUEST:", data.tableNumber);
+    io.to(!"admins").emit("bill-requested", {
+      tableNumber: data.tableNumber,
+    });
+  });
 });
 app.set("io", io);
 app.use(express.json());

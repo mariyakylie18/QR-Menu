@@ -20,6 +20,13 @@ const createOrder = async (req, res) => {
         message: "One or more foods not found",
       });
     }
+    
+  const unavailableFood = foods.find((food) => food.isAvailable === false);
+  if (unavailableFood) {
+    return res.status(400).json({
+      message: `${unavailableFood.name} түр дууссан байна`,
+    });
+  }
 
     let totalPrice = 0;
     foods.forEach((food) => {

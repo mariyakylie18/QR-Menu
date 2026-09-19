@@ -304,16 +304,17 @@ function renderFoods(foods) {
     <div class="admin-actions">
       <button class="edit-btn">Засах</button>
       <button class="delete-btn">Устгах</button>
-      <button class="availability-btn ${food.isAvailable !== false ?
-        "available" : "unavailable"}"
+      <button class="availability-btn ${
+        food.isAvailable !== false ? "available" : "unavailable"
+      }"
         >
-        ${food.isAvailable !== false ? "Garch baina" : "Tur duussan" } 
+        ${food.isAvailable !== false ? "Гарч  байгаа" : "Түр гарахгүй"} 
         </button>
     </div>`;
 
     const editButton = card.querySelector(".edit-btn");
     const deleteButton = card.querySelector(".delete-btn");
-    const availabilityBtn = card.querySelector(".availability-btn")
+    const availabilityBtn = card.querySelector(".availability-btn");
 
     editButton.addEventListener("click", () => {
       startEditingFood(food);
@@ -324,35 +325,31 @@ function renderFoods(foods) {
 
     availabilityBtn.addEventListener("click", async () => {
       try {
-        const newAvailability =
-          food.isAvailable === false;
-    
-        const response = await fetch(
-          `${API_URL}/${food._id}/availability`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              isAvailable: newAvailability,
-            }),
-          }
-        );
-    
+        const newAvailability = food.isAvailable === false;
+
+        const response = await fetch(`${API_URL}/${food._id}/availability`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            isAvailable: newAvailability,
+          }),
+        });
+
         const data = await response.json();
-    
+
         if (!response.ok) {
           console.log("Availability error:", data);
           return;
         }
-    
+
         getFoods();
       } catch (error) {
         console.log("Availability error:", error);
       }
-    });    
+    });
 
     foodList.appendChild(card);
   });
@@ -653,6 +650,16 @@ socket.on("order-ready", (data) => {
   getOrders();
 });
 
+socket.on("bill-requested", (data) => {
+  showToast(
+    `💳 Ширээ ${data.tableNumber} тооцоо авах хүсэлт илгээлээ`,
+    "success",
+  );
+  orderSound.currentTime = 0;
+  orderSound.play().catch((error) => {
+    console.log("Bill sound blocked:", error);
+  });
+});
 document.addEventListener(
   "click",
   async () => {
