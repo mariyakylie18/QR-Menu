@@ -139,7 +139,7 @@ function showToast(message, type = "success") {
   toast.className = `toast ${type} show`;
   setTimeout(() => {
     toast.classList.remove("show");
-  }, 2500);
+  }, duration);
 }
 async function getFoods() {
   try {
@@ -648,9 +648,10 @@ socket.on("bill-requested", (data) => {
   showToast(
     `💳 Ширээ ${data.tableNumber} тооцоо авах хүсэлт илгээлээ`,
     "success",
+    15000,
   );
-  billSound.currentTime = 0;
-  billSound.play().catch((error) => {
+  orderSound.currentTime = 0;
+  orderSound.play().catch((error) => {
     console.log("Bill sound blocked:", error);
   });
 });
