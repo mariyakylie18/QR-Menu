@@ -158,6 +158,7 @@ requestBillBtn.addEventListener("click", () => {
     alert("Ширээний дугаар олдсонгүй.");
     return;
   }
+  console.log("Bill request sent", tableNumber);
   socket.emit("request-bill", {
     tableNumber,
   });

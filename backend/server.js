@@ -45,9 +45,10 @@ io.on("connection", (socket) => {
     }
     // socket.join(`order:${orderId}`);
   });
+
   socket.on("request-bill", (data) => {
     console.log("BILL REQUEST:", data.tableNumber);
-    io.to(!"admins").emit("bill-requested", {
+    io.to("admins").emit("bill-requested", {
       tableNumber: data.tableNumber,
     });
   });
