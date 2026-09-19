@@ -123,17 +123,17 @@ openAddFoodBtn.addEventListener("click", () => {
   editingFoodId = null;
   addFoodForm.reset();
   updateCategories();
-  submitButton.textContent = "Add Food";
-  formTitle.textContent = "Add Food";
-  imageBtn.textContent = "Choose image";
-  imageText.textContent = "No image selected";
+  submitButton.textContent = "Шинээр нэмэх";
+  formTitle.textContent = "Шинээр нэмэх";
+  imageBtn.textContent = "Зураг сонгох";
+  imageText.textContent = "Зураг сонгогдоогүй";
   foodModal.classList.add("show");
 });
 closeModalBtn.addEventListener("click", () => {
   foodModal.classList.remove("show");
 });
 
-function showToast(message, type = "success") {
+function showToast(message, type = "success", duration = 4000) {
   toast.textContent = message;
 
   toast.className = `toast ${type} show`;

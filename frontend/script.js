@@ -271,7 +271,7 @@ async function getFoods() {
     const data = await response.json();
     currentPage = data.page;
     totalPages = data.totalPages;
-    pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+    pageInfo.textContent = `Хуудас ${currentPage} / ${totalPages}`;
     prevPageBtn.disabled = currentPage <= 1;
     nextPageBtn.disabled = currentPage >= totalPages;
     renderCategories(data.categories);
@@ -564,8 +564,8 @@ async function loadCustomerHistory() {
         <div class="history-order-header">
           <strong>Ширээ ${order.tableNumber}</strong>
 
-          <span class="history-status status-${order.status}">
-            ${order.status}
+          <span class="history-status">
+          ${statusMessages[order.status] || order.status}
           </span>
         </div>
 
