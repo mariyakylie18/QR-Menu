@@ -1843,3 +1843,59 @@ body {
   border-color: #707070;
   background: rgba(255, 255, 255, 0.04);
 }
+
+.admin-type-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 22px 0 18px;
+  flex-wrap: wrap;
+}
+
+.admin-type-btn {
+  padding: 10px 20px;
+
+  background: transparent;
+  color: #f5f1e8;
+
+  border: 1px solid #c9a84c;
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.admin-type-btn:hover {
+  background: rgba(201, 168, 76, 0.12);
+}
+
+.admin-type-btn.active {
+  background: linear-gradient(135deg, #d3a823, #f2d555);
+
+  color: #15120b;
+  border-color: #e7c45d;
+}
+
+
+
+.availability-btn {
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.availability-btn.available {
+  color: #91ee9f;
+  background: rgba(103, 200, 121, 0.12);
+  border: 1px solid #67c879;
+}
+
+.availability-btn.unavailable {
+  color: #ff9b9b;
+  background: rgba(220, 80, 80, 0.12);
+  border: 1px solid #c85a5a;
+}

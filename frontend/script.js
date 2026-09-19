@@ -282,9 +282,9 @@ function getImageUrl(image) {
 }
 
 function renderFoods(foods) {
+  const availableFoods = foods.filter((food) => food.isAvailable !== false)
   foodList.innerHTML = "";
-
-  foods.forEach((food) => {
+   availableFoods.forEach((food) => {
     const card = document.createElement("article");
 
     card.classList.add("food-card");
@@ -309,11 +309,6 @@ function renderFoods(foods) {
       }
       console.log(cart);
       updateCartCount();
-
-      // const totalQuantity = cart.reduce((total, item) => {
-      //   return total + item.quantity;
-      // }, 0);
-      // cartCount.textContent = totalQuantity;
     });
     card.addEventListener("click", () => {
       showFoodDetail(food);
@@ -493,6 +488,14 @@ async function loadCustomerHistory() {
       "<p class='empty-history'>Одоогоор захиалгын түүх алга.</p>";
     return;
   }
+
+  const statusMessages = {
+    pending: "Хүлээн авсан",
+    confirmed: "Баталгаажсан",
+    preparing: "Бэлтгэж байна",
+    ready: "Бэлэн болсон",
+    completed: "Үйлчилгээ дууссан",
+  };
 
   for (const item of history) {
     try {

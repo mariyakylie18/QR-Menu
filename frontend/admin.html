@@ -11,8 +11,8 @@
   <body>
     <header class="admin-header">
       <div>
-        <h1>Admin Panel</h1>
-        <p>Менюгаа удирдах</p>
+        <h1>Админ хэсэг</h1>
+        <p>Ресторанаа удирдах</p>
       </div>
       <button id="logout-btn">Гарах товч</button>
     </header>
@@ -61,7 +61,7 @@
               <label for="food-type">Төрөл</label>
               <select id="food-type" required>
                 <option value="food">Хоол</option>
-                <option value="drink">Уух зүйл</option>
+                <option value="drink">Уух зүйс</option>
               </select>
               <select id="food-category" required></select>
             </div>
@@ -83,10 +83,15 @@
           </form>
         </div>
       </div>
-      <h2>Хоол</h2>
-      <div class="food-tools">
-        <input type="search" id="food-search" placeholder="Search foods..." />
+      <div class="admin-type-tabs">
+        <button class="admin-type-btn active" data-type="">Бүгд</button>
 
+        <button class="admin-type-btn" data-type="food">Хоол</button>
+
+        <button class="admin-type-btn" data-type="drink">Уух зүйлс</button>
+      </div>
+      <div class="food-tools">
+        <input type="search" id="food-search" placeholder="Нэрээр нь хайх..." />
         <select id="category-filter">
           <option value="">Бүх төрөл</option>
         </select>

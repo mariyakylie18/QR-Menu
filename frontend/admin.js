@@ -38,7 +38,8 @@ const orderHistory = document.getElementById("order-history");
 const historyBtn = document.getElementById("history-btn");
 const foodType = document.getElementById("food-type");
 const foodCategory = document.getElementById("food-category");
-
+const adminTypeBtn = document.querySelectorAll(".admin-type-btn");
+let selectedAdminType = "";
 // foodType.addEventListener("change", () => {
 function updateCategories() {
   console.log("UPDATE:", foodType.value);
@@ -47,22 +48,27 @@ function updateCategories() {
   <option value ="">Category сонгох</option>
   <option value ="1-р хоол">1-р хоол</option>
   <option value ="2-р хоол">2-р хоол</option>
+  <option value ="Захиалгат хоол">Захиалгат хоол</option>
   <option value ="Тахиан махтай хоол">Тахиан махтай хоол</option>
   <option value ="Солонгос хоол">Солонгос хоол</option>
+  <option value ="Багцын хоол">Багцын хоол</option>
   <option value ="Пицца">Пицца</option>
   <option value ="Хачир, салат">Хачир, салат</option>
-  <option value ="Багцын хоол">Багцын хоол</option>
-  <option value ="Цагаан хоол">Цагаан хоол</option>
-  <option value ="Амттан">Амттан</option>
   `;
   } else if (foodType.value === "drink") {
     foodCategory.innerHTML = `
      <option value ="">Category сонгох</option>
-     <option value ="Soft drink">Soft drink</option>
-     <option value ="Халуун уух зүйл">Халуун уух зүйл</option>
-     <option value ="Коктэйл">Коктэйл</option>
-     <option value ="Хүйтэн шар айраг">Хүйтэн шар айраг</option>
-     <option value ="Бусад">Бусад</option>
+     <option value ="Хүйтэн уух зүйлс">Хүйтэн уух зүйлс</option>
+     <option value ="Халуун уух зүйлс">Халуун уух зүйлс</option>
+     <option value ="Архи">Архи</option>
+     <option value ="Пиво">Пиво</option>
+     <option value ="Виски">Виски</option>
+     <option value ="Ликор">Ликор</option>
+     <option value ="Жинь Текила">Жинь Текила</option>
+     <option value ="Дарс">Дарс</option>
+     <option value ="Коньяк">Коньяк</option>
+     <option value ="Коктейл">Коктейл</option>
+     <option value ="Амттан">Амттан</option>
     `;
   }
 }
@@ -142,6 +148,9 @@ async function getFoods() {
     const search = searchInput.value.trim();
     const category = categoryFilter.value;
     const params = new URLSearchParams();
+    if (selectedAdminType) {
+      params.set("type", selectedAdminType);
+    }
     const sort = sortFilter.value;
     if (sort) {
       params.set("sort", sort);
@@ -194,6 +203,21 @@ async function getFoods() {
     });
   }
 }
+adminTypeBtn.forEach((button) => {
+  button.addEventListener("click", () => {
+    adminTypeBtn.forEach((btn) => {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    selectedAdminType = button.dataset.type;
+
+    currentPage = 1;
+    getFoods();
+  });
+});
+
 prevPageBtn.addEventListener("click", () => {
   if (currentPage > 1) {
     currentPage--;
@@ -278,12 +302,18 @@ function renderFoods(foods) {
                 <p>${food.description || ""}</p>
                 <strong>${Number(food.price).toLocaleString()}₮</strong>
     <div class="admin-actions">
-      <button class="edit-btn">Edit</button>
-      <button class="delete-btn">Delete</button>
+      <button class="edit-btn">Засах</button>
+      <button class="delete-btn">Устгах</button>
+      <button class="availability-btn ${food.isAvailable !== false ?
+        "available" : "unavailable"}"
+        >
+        ${food.isAvailable !== false ? "Garch baina" : "Tur duussan" } 
+        </button>
     </div>`;
 
     const editButton = card.querySelector(".edit-btn");
     const deleteButton = card.querySelector(".delete-btn");
+    const availabilityBtn = card.querySelector(".availability-btn")
 
     editButton.addEventListener("click", () => {
       startEditingFood(food);
@@ -291,13 +321,46 @@ function renderFoods(foods) {
     deleteButton.addEventListener("click", () => {
       deleteFood(food._id);
     });
+
+    availabilityBtn.addEventListener("click", async () => {
+      try {
+        const newAvailability =
+          food.isAvailable === false;
+    
+        const response = await fetch(
+          `${API_URL}/${food._id}/availability`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              isAvailable: newAvailability,
+            }),
+          }
+        );
+    
+        const data = await response.json();
+    
+        if (!response.ok) {
+          console.log("Availability error:", data);
+          return;
+        }
+    
+        getFoods();
+      } catch (error) {
+        console.log("Availability error:", error);
+      }
+    });    
+
     foodList.appendChild(card);
   });
 }
 
 function renderCategories(categories) {
   const selectedCategory = categoryFilter.value;
-  categoryFilter.innerHTML = `<option value="">All categories</option>`;
+  categoryFilter.innerHTML = `<option value="">Бүх категори</option>`;
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
@@ -315,7 +378,7 @@ function startEditingFood(food) {
     preview.src = getImageUrl(food.image);
     preview.style.display = "block";
     imageNote.textContent =
-      "If you don’t select a new image, the current image will remain unchanged.";
+      "Хэрвээ та зураг солихгүй бол одоо байгаа зургаар хадгалагдана.";
   }
 
   editingFoodId = food._id;
@@ -325,15 +388,15 @@ function startEditingFood(food) {
   document.getElementById("food-category").value = food.category;
   document.getElementById("food-description").value = food.description || "";
 
-  submitButton.textContent = "Save Changes";
+  submitButton.textContent = "Хадгалах";
 
   // window.scrollTo({
   //   top: 0,
   //   behavior: "smooth",
   // });
 
-  imageBtn.textContent = "Change image";
-  imageText.textContent = "Current image will be kept";
+  imageBtn.textContent = "Зураг солих";
+  imageText.textContent = "Сонгогдсон зураг";
   foodModal.classList.add("show");
 }
 function deleteFood(id) {
@@ -510,11 +573,11 @@ async function getOrders() {
     <p>Total: ${order.totalPrice.toLocaleString()}₮</p>
     </div>
     <select class= "order-status status-${order.status}">
-    <option value="pending" ${order.status === "pending" ? "selected" : ""}>pending</option>
-    <option value="confirmed" ${order.status === "confirmed" ? "selected" : ""}>confirmed</option>
-    <option value="preparing" ${order.status === "preparing" ? "selected" : ""}>preparing</option>
-    <option value="ready" ${order.status === "ready" ? "selected" : ""}>ready</option>
-    <option value="completed" ${order.status === "completed" ? "selected" : ""}>completed</option>
+    <option value="pending" ${order.status === "pending" ? "selected" : ""}>Шинэ захиалга</option>
+    <option value="confirmed" ${order.status === "confirmed" ? "selected" : ""}>Захиалга баталгаажсан</option>
+    <option value="preparing" ${order.status === "preparing" ? "selected" : ""}>Бэлтгэж байна</option>
+    <option value="ready" ${order.status === "ready" ? "selected" : ""}>Бэлэн болсон</option>
+    <option value="completed" ${order.status === "completed" ? "selected" : ""}>Тооцоо дууссан</option>
     </select>
     `;
     const statusSelect = orderCard.querySelector(".order-status");
