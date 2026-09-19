@@ -39,6 +39,7 @@ const historyBtn = document.getElementById("history-btn");
 const foodType = document.getElementById("food-type");
 const foodCategory = document.getElementById("food-category");
 const adminTypeBtn = document.querySelectorAll(".admin-type-btn");
+const billSound = new Audio("./sounds/bill.mp3");
 let selectedAdminType = "";
 // foodType.addEventListener("change", () => {
 function updateCategories() {
@@ -623,14 +624,7 @@ async function getOrders() {
 historyBtn.addEventListener("click", () => {
   orderHistory.classList.toggle("show");
 });
-// function playNotificationSound() { ooroo duu uusgej boloh function
-//   const audioContext = new AudioContext();
-//   const oscillator = audioContext.createOscillator();
-//   oscillator.frequency.value = 800;
-//   oscillator.connect(audioContext.destination);
-//   oscillator.start();
-//   oscillator.stop(audioContext.currentTime + 0.2);
-// }
+
 socket.on("new-order", () => {
   getOrders();
   orderSound.currentTime = 0;
@@ -655,15 +649,15 @@ socket.on("bill-requested", (data) => {
     `💳 Ширээ ${data.tableNumber} тооцоо авах хүсэлт илгээлээ`,
     "success",
   );
-  orderSound.currentTime = 0;
-  orderSound.play().catch((error) => {
+  billSound.currentTime = 0;
+  billSound.play().catch((error) => {
     console.log("Bill sound blocked:", error);
   });
 });
 document.addEventListener(
   "click",
   async () => {
-    const sounds = [orderSound, kitchenReadySound];
+    const sounds = [orderSound, kitchenReadySound, billSound];
     for (const sound of sounds) {
       try {
         sound.volume = 0;

@@ -32,6 +32,7 @@ const io = new Server(server, {
 });
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
+
   socket.on("join-order", async (data) => {
     try {
       const order = await Order.findById(data.orderId);
@@ -44,6 +45,13 @@ io.on("connection", (socket) => {
     }
     // socket.join(`order:${orderId}`);
   });
+  socket.on("request-bill", (data) => {
+    console.log("BILL REQUEST:", data.tableNumber);
+    io.to(!"admins").emit("bill-requested", {
+      tableNumber: data.tableNumber,
+    });
+  });
+
   socket.on("join-admin", () => {
     try {
       const token = socket.handshake.auth.token;
@@ -55,13 +63,6 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.log("Admin socket auth failed:", error.message);
     }
-  });
-
-  socket.on("request-bill", (data) => {
-    console.log("BILL REQUEST:", data.tableNumber);
-    io.to(!"admins").emit("bill-requested", {
-      tableNumber: data.tableNumber,
-    });
   });
 });
 app.set("io", io);
