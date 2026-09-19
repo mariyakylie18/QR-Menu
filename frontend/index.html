@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <script>
-      const MAINTENANCE_MODE = false;
+      const MAINTENANCE_MODE = true;
       if (MAINTENANCE_MODE) {
         window.location.replace("maintenance.html");
       }
@@ -54,9 +54,12 @@
         <!-- <button class="close-modal">x</button> -->
       </section>
       <p id="table-number">Ширээ</p>
-      <div class="menu-types">
-        <button class="type-btn active" data-type="food">Хоол</button>
-        <button class="type-btn" data-type="drink">Уух зүйл</button>
+      <div class="menu-type-row">
+        <div class="menu-types">
+          <button class="type-btn active" data-type="food">Хоол</button>
+          <button class="type-btn" data-type="drink">Уух зүйлс</button>
+        </div>
+        <p class="image-note">* Менюн дээрх зураг бодит зураг биш болно.</p>
       </div>
       <nav
         id="category-list"
@@ -72,10 +75,14 @@
         </button>
         <button id="customer-history-btn" type="button">Захиалгын түүх</button>
       </div>
+
+      <section class="customer-service">
+        <button id="request-bill-btn" type="button">💳 Тооцоо авах</button>
+      </section>
       <div class="pagination">
         <button id="prev-page-btn" type="button">Өмнөх</button>
-        <span id="page-info">Page 1 / 1</span>
-        <button id="next-page-btn" type="button">Дараагийн</button>
+        <span id="page-info">Хуудас 1 / 1</span>
+        <button id="next-page-btn" type="button">Дараах</button>
       </div>
     </main>
     <script src="https://qr-menu-nd8d.onrender.com/socket.io/socket.io.js"></script>
