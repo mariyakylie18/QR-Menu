@@ -650,8 +650,8 @@ socket.on("bill-requested", (data) => {
     "success",
     15000,
   );
-  orderSound.currentTime = 0;
-  orderSound.play().catch((error) => {
+  billSound.currentTime = 0;
+  billSound.play().catch((error) => {
     console.log("Bill sound blocked:", error);
   });
 });
